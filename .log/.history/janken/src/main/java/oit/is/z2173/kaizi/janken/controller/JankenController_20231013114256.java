@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import oit.is.z2173.kaizi.janken.model.Entry;
-import oit.is.z2173.kaizi.janken.model.Janken;
 
 @Controller
 public class JankenController {
@@ -16,26 +15,33 @@ public class JankenController {
   @Autowired
   private Entry entry;
 
-  private String userName;
-
   @GetMapping("/janken")
   public String janken(Principal prin, ModelMap model) {
-    this.userName = prin.getName();
+    String userName = prin.getName();
     this.entry.addUser(userName);
-    model.addAttribute("users", this.entry.getUsers());
-    model.addAttribute("userName", userName);
+    model.getAttribute(userName);
     model.addAttribute("entry", this.entry);
     return "janken.html";
   }
 
   @GetMapping("/jankengame")
   public String jankengame(@RequestParam String PlayerHand, ModelMap model) {
-    Janken janken = new Janken(PlayerHand);
-    model.addAttribute("userName", this.userName);
-    model.addAttribute("users", this.entry.getUsers());
-    model.addAttribute("PlayerHand", janken.getPlayerHand());
-    model.addAttribute("ComputerHand", janken.getComputerHand());
-    model.addAttribute("Result", janken.getResult());
+    String Result = "";
+    String ComputerHand = "gu";
+    switch (PlayerHand) {
+      case "gu":
+        Result = "Draw";
+        break;
+      case "choki":
+        Result = "You Lose";
+        break;
+      case "pa":
+        Result = "You Win";
+        break;
+    }
+    model.addAttribute("PlayerHand", PlayerHand);
+    model.addAttribute("ComputerHand", ComputerHand);
+    model.addAttribute("Result", Result);
     return "janken.html";
   }
 }

@@ -16,11 +16,9 @@ public class JankenController {
   @Autowired
   private Entry entry;
 
-  private String userName;
-
   @GetMapping("/janken")
   public String janken(Principal prin, ModelMap model) {
-    this.userName = prin.getName();
+    String userName = prin.getName();
     this.entry.addUser(userName);
     model.addAttribute("users", this.entry.getUsers());
     model.addAttribute("userName", userName);
@@ -31,7 +29,6 @@ public class JankenController {
   @GetMapping("/jankengame")
   public String jankengame(@RequestParam String PlayerHand, ModelMap model) {
     Janken janken = new Janken(PlayerHand);
-    model.addAttribute("userName", this.userName);
     model.addAttribute("users", this.entry.getUsers());
     model.addAttribute("PlayerHand", janken.getPlayerHand());
     model.addAttribute("ComputerHand", janken.getComputerHand());
