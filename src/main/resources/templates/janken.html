@@ -11,24 +11,22 @@
 
   <h1>Janken Game!</h1>
 
-  <div th:if="entry">
-    エントリー
+  <p>Hi [[${userName}]]</p>
+  <h3>エントリー</h3>
+  <div th:each="user : ${users}">
     <ul>
-      <li th:each="user : ${users}">[[${user}]]</li>
+      <li><a th:href="@{/match(id=${user.id})}">[[${user.getName()}]]</a></li>
     </ul>
   </div>
-
-  <p>Hi [[${userName}]]</p>
-  <div>
-    <a href="/jankengame?PlayerHand=gu">グー</a>
-    <a href="/jankengame?PlayerHand=choki">チョキ</a>
-    <a href="/jankengame?PlayerHand=pa">パー</a>
-  </div>
-  <br>
-  <div th:if="${Result}">
-    <p>あなたの手:[[${PlayerHand}]]</p>
-    <p>相手の手:[[${ComputerHand}]]</p>
-    <p>結果:[[${Result}]]</p>
+  <h3>試合結果</h3>
+  <table th:each="match:${matches}">    
+    <tr>
+      <td>id:[[${match.getId()}]]</td>
+      <td>user1:[[${match.getUser1()}]]</td>
+      <td>user2:[[${match.getUser2()}]]</td>
+      <td>user1の手:[[${match.getUser1Hand()}]]</td>
+      <td>user2の手:[[${match.getUser2Hand()}]]</td>
+    </tr>
   </div>
 
 </body>

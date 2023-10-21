@@ -22,7 +22,12 @@ public class JankenAuthConfiguration {
             .logoutSuccessUrl("/")) // ログアウト後に / にリダイレクト
         .authorizeHttpRequests(authz -> authz
             .requestMatchers(AntPathRequestMatcher.antMatcher("/janken/**")).authenticated() // /sample3/以下は認証済みであること
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/**")).permitAll()); // それ以外は全員アクセス可能
+            .requestMatchers(AntPathRequestMatcher.antMatcher("/**")).permitAll()) // それ以外は全員アクセス可能
+        .csrf(csrf -> csrf
+            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*")))
+        .headers(headers -> headers
+            .frameOptions(frameOptions -> frameOptions
+                .sameOrigin()));
     return http.build();
   }
 
@@ -32,6 +37,8 @@ public class JankenAuthConfiguration {
         .password("{bcrypt}$2y$10$MYQvH6GQCHOLPzfbstw6RejFTvby2p8bvJjj3o5tUpYU3HNyIQzYS").roles("USER").build();
     UserDetails user2 = User.withUsername("user2")
         .password("{bcrypt}$2y$10$MYQvH6GQCHOLPzfbstw6RejFTvby2p8bvJjj3o5tUpYU3HNyIQzYS").roles("USER").build();
-    return new InMemoryUserDetailsManager(user1, user2);
+    UserDetails honda = User.withUsername("ほんだ")
+        .password("{bcrypt}$2y$10$MYQvH6GQCHOLPzfbstw6RejFTvby2p8bvJjj3o5tUpYU3HNyIQzYS").roles("USER").build();
+    return new InMemoryUserDetailsManager(user1, user2, honda);
   }
 }
