@@ -9,6 +9,11 @@ public class Janken {
         this.ComputerHand = "gu";
     }
 
+    public Janken(String PlayerHand, String ComputerHand){
+        this.PlayerHand = PlayerHand;
+        this.ComputerHand = ComputerHand;
+    }
+
     public String getResult(){
         switch (this.PlayerHand) {
           case "gu":
