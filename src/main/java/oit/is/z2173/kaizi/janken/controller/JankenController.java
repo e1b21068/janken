@@ -21,13 +21,18 @@ public class JankenController {
   @Autowired
   private MatchMapper matchMapper;
 
+  @Autowired
+  private MatchInfoMapper matchInfoMapper;
+
   @GetMapping("/janken")
   public String janken(Principal prin, ModelMap model) {
     ArrayList<User> users = userMapper.selectByUsers();
-    ArrayList<Match> matches = matchMapper.selectByMatches();
+    ArrayList<Match> matches = matchMapper.selectAllMatches();
+    ArrayList<MatchInfo> matchInfos = matchInfoMapper.selectAllMatchInfo();
     this.userName = prin.getName();
     model.addAttribute("users", users);
     model.addAttribute("matches", matches);
+    model.addAttribute("matchInfos", matchInfos);
     model.addAttribute("userName", this.userName);
     return "janken.html";
   }
@@ -38,6 +43,20 @@ public class JankenController {
     model.addAttribute("user", user);
     model.addAttribute("userName", this.userName);
     return "match.html";
+  }
+
+  @GetMapping("/wait")
+  public String wait(@RequestParam int id, @RequestParam String PlayerHand, ModelMap model){
+    MatchInfo matchInfo = new MatchInfo();
+    matchInfo.setUser1(userMapper.selectByName(this.userName).getId());
+    matchInfo.setUser2(id);
+    matchInfo.setUser1Hand(PlayerHand);
+    matchInfo.setIsActive(true);
+    matchInfoMapper.insertMatchInfo(matchInfo);
+
+    model.addAttribute("user",userMapper.selectById(id));
+    model.addAttribute("userName", this.userName);
+    return "wait.html";
   }
   
   @GetMapping("/fight")

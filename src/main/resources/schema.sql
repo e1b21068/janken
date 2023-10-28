@@ -13,7 +13,7 @@ CREATE TABLE matches(
 );
 
 CREATE TABLE matchinfo(
-    id INT NOT NULL,
+    id IDENTITY,
     user1 INT NOT NULL,
     user2 INT NOT NULL,
     user1Hand VARCHAR NOT NULL,

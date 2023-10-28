@@ -4,5 +4,5 @@ INSERT INTO users (name) VALUES ('いがき');
 INSERT INTO matches (user1, user2, user1Hand, user2Hand, isActive) VALUES (2,1,'Gu', 'Choki', 'FALSE');
 INSERT INTO matches (user1, user2, user1Hand, user2Hand, isActive) VALUES (2,1,'Gu', 'Gu', 'FALSE');
 INSERT INTO matches (user1, user2, user1Hand, user2Hand, isActive) VALUES (2,1,'Gu', 'Pa', 'FALSE');
-INSERT INTO matchinfo (id, user1, user2, user1Hand, isActive) VALUES (1,2,1,'Gu', 'FALSE');
-INSERT INTO matchinfo (id, user1, user2, user1Hand, isActive) VALUES (2,3,1,'Choki', 'FALSE');
+INSERT INTO matchinfo (user1, user2, user1Hand, isActive) VALUES (2,1,'Gu', 'FALSE');
+INSERT INTO matchinfo (user1, user2, user1Hand, isActive) VALUES (3,1,'Choki', 'FALSE');
