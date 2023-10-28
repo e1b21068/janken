@@ -29,10 +29,12 @@ public class JankenController {
     ArrayList<User> users = userMapper.selectByUsers();
     ArrayList<Match> matches = matchMapper.selectAllMatches();
     ArrayList<MatchInfo> matchInfos = matchInfoMapper.selectAllMatchInfo();
+    ArrayList<MatchInfo> activeMatches = matchInfoMapper.selectActiveMatchInfo();
     this.userName = prin.getName();
     model.addAttribute("users", users);
     model.addAttribute("matches", matches);
     model.addAttribute("matchInfos", matchInfos);
+    model.addAttribute("activeMatches", activeMatches);
     model.addAttribute("userName", this.userName);
     return "janken.html";
   }
