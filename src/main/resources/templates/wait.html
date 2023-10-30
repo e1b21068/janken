@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Janken Game!</title>
+    <script>
+      window.onload = function(){
+        var sse = new EventSource("/result");
+        sse.onmessage = function(event){
+          console.log(event.data);
+          var result = JSON.parse(event.data);
+          var keys=["id","user1","user2","user1Hand","user2Hand"];
+          var resultTable = "<tr>" + keys.map(key =>`<td>${key}:<td>${result[key]}</td>`).join("") + "</tr>";
+          var tbody = document.getElementById("resultTable");
+          tbody.innerHTML=resultTable;
+
+          var resultHeader = document.getElementById("resultHeader");
+          resultHeader.innerHTML = "試合結果";
+          var back_link = document.getElementById("back_link");
+          back_link.innerHTML = "戻る";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>相手の手を待っています</h1>
+    <div>Hi [[${userName}]]</div>
+    <div>
+      <h2 id="resultHeader"></h2>
+      <table>
+        <tbody id="resultTable"></tbody>
+      </table>
+      <a id="back_link" href="/janken"></a>
+    </div>
+  </body>
+</html>
