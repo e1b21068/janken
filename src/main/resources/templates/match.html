@@ -14,9 +14,9 @@
     <h2>[[${userName}]] V.S. [[${user.name}]]</h2>
 
     <div>
-      <a th:href="@{/wait(id=${user.id}, PlayerHand='gu')}">グー</a>
-      <a th:href="@{/wait(id=${user.id}, PlayerHand='choki')}">チョキ</a>
-      <a th:href="@{/wait(id=${user.id}, PlayerHand='pa')}">パー</a>
+      <a th:href="@{/fight(id=${user.id}, PlayerHand='gu')}">グー</a>
+      <a th:href="@{/fight(id=${user.id}, PlayerHand='choki')}">チョキ</a>
+      <a th:href="@{/fight(id=${user.id}, PlayerHand='pa')}">パー</a>
     </div>
     <br>
     <div th:if="${result}">

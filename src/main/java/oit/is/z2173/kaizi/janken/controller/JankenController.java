@@ -6,12 +6,21 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import oit.is.z2173.kaizi.janken.model.*;
+import oit.is.z2173.kaizi.janken.service.AsyncKekka;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class JankenController {
+
+  private final Logger logger = LoggerFactory.getLogger(JankenController.class);
+
+  @Autowired
+  private AsyncKekka ak;
 
   private String userName;
 
@@ -47,8 +56,18 @@ public class JankenController {
     return "match.html";
   }
 
-  @GetMapping("/wait")
+  @GetMapping("/fight")
   public String wait(@RequestParam int id, @RequestParam String PlayerHand, ModelMap model){
+    MatchInfo matchInfo = matchInfoMapper.selectByUsers(id, userMapper.selectByName(this.userName).getId());
+    if(matchInfo == null){
+      makeMatch(id, PlayerHand, model);
+    }else{
+      addMatch(id, matchInfo.getUser1Hand(), PlayerHand, model);
+    }
+    return "wait.html";
+  }
+
+  private void makeMatch(int id, String PlayerHand, ModelMap model){
     MatchInfo matchInfo = new MatchInfo();
     matchInfo.setUser1(userMapper.selectByName(this.userName).getId());
     matchInfo.setUser2(id);
@@ -58,26 +77,34 @@ public class JankenController {
 
     model.addAttribute("user",userMapper.selectById(id));
     model.addAttribute("userName", this.userName);
-    return "wait.html";
   }
-  
-  @GetMapping("/fight")
-  public String jankengame(@RequestParam int id, @RequestParam String PlayerHand, ModelMap model) {
+
+  private void addMatch(int id, String Player1Hand, String Player2Hand, ModelMap model){
     Match match = new Match();
-    Janken janken = new Janken(PlayerHand);
+    MatchInfo matchInfo = matchInfoMapper.selectByUsers(id, userMapper.selectByName(this.userName).getId());
+    Janken janken = new Janken(Player1Hand, Player2Hand);
 
-    match.setUser1(userMapper.selectByName(this.userName).getId());
-    match.setUser2(id);
-    match.setUser1Hand(janken.getPlayerHand());
-    match.setUser2Hand(janken.getComputerHand());
+    match.setUser1(id);
+    match.setUser2(userMapper.selectByName(this.userName).getId());
+    match.setUser1Hand(janken.getPlayer1Hand());
+    match.setUser2Hand(janken.getPlayer2Hand());
+    match.setIsActive(true);
+    matchInfo.setIsActive(false);
+    matchInfoMapper.updateMatchInfo(matchInfo);
     matchMapper.insertMatch(match);
+    this.ak.setDbUpdated(true);
 
-    model.addAttribute("user",userMapper.selectById(id));
-    model.addAttribute("user1", janken.getPlayerHand());
-    model.addAttribute("user2", janken.getComputerHand());
-    model.addAttribute("result", janken.getResult());
+    model.addAttribute("user1", janken.getPlayer1Hand());
+    model.addAttribute("user2", janken.getPlayer2Hand());
     model.addAttribute("userName", this.userName);
-
-    return "match.html";
   }
+
+  @GetMapping("/result")
+  public SseEmitter printKekka(){
+    logger.info("printKekka");
+    final SseEmitter emitter = new SseEmitter();
+    this.ak.printKekka(emitter);
+    return emitter;
+  }
+
 }
